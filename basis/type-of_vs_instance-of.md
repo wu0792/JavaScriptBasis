@@ -33,10 +33,10 @@ let newLetVariable23a;typeof newLetVariable23a;
 # instanceof
 > ### test whether the prototype property of constructor appears anywhere in the prototype chain of an object
 
-used in custom type and nested type in host enviroment like Array, Date, Regex, Map
+used in custom type and nested type in host enviroment like Array, Date, RegExp, Map
 
 ``` javascript
-/hello/ instanceof Regex        //true
+/hello/ instanceof RegExp        //true
 [1, 2] instanceof Array         //true
 ```
 
@@ -44,4 +44,12 @@ used in custom type and nested type in host enviroment like Array, Date, Regex, 
 ``` javascript
 'literal notation' instanceof String            //false
 new String('object type') instanceof String     //true
+```
+
+# isPrototypeOf
+> ### test the prototype is prototype of the instance
+
+``` javascript
+RegExp.prototype.isPrototypeOf(/hello/)     //true
+Object.prototype.isPrototypeOf(/hello/)     //true
 ```
