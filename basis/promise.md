@@ -107,3 +107,54 @@ function Promise(fn){
     fn(resolve)
 }
 ```
+
+now our promise has no state like pending, onFulfilled, onReject. and now we will finish it.
+
+``` javascript
+function Promise(fn){
+    let deferreds = [],
+        onRejectFns = [],
+        state = 'pending',
+        finalValue = null,
+        rejectReason = null
+
+    this.then = (onFulfilled) => {
+        if(state==='pending'){
+            deferreds.push(onFulfied)
+        }else{
+            onFulfiled(finalValue)
+        }
+
+        return this
+    }
+
+    let resolve = (value) => {
+        finalValue = value
+        state = 'onFulfilled'
+
+        deferreds.forEach((deferred) => {
+            setTimeout(() => { deferred(value) }, 0)
+        })
+    }
+
+    this.catch = (onReject) => {
+        if(state === 'onReject'){
+            onRejectFns.push(onReject)
+        }else{
+            onReject(rejectReason)
+        }
+    }
+
+    this.reject = (reason) => {
+        rejectReason = reason
+        state = 'onReject'
+
+        onRejectFns.forEach(fn => {
+            setTimeout(() => { fn(reason) }, 0)
+        })
+    }
+
+    fn(resolve)
+}
+```
+
