@@ -1,0 +1,54 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>thousand Split Character</title>
+    <script>
+        function init() {
+            var input1 = document.getElementById('input1')
+            input1.onblur = onInput1Blur
+        }
+
+        function changeStyle(el, isValid) {
+            el.style.color = isValid ? '' : 'red'
+        }
+
+        function onInput1Blur(ev) {
+            var input1 = ev.target,
+                value = input1.value
+
+
+
+            var valueNumber = parseFloat(value)
+
+            if ((valueNumber + '') === value) {
+                changeStyle(input1, true)
+                var intPart = parseInt(valueNumber),
+                    decimalPart = valueNumber - intPart
+
+                var result = '',
+                    thousandPart = 0
+
+                while (thousandPart = parseInt(intPart / 1000)) {
+                    intPart = intPart % 1000
+                    result += `${thousandPart}${intPart ? ',' : ''}`
+                }
+
+                result += intPart
+                result += decimalPart ? `.${decimalPart}` : ''
+
+                input1.value = result
+            } else {
+                changeStyle(input1, false)
+            }
+        }
+    </script>
+</head>
+
+<body onload="init()">
+    <input type="text" id='input1'>
+</body>
+
+</html>
