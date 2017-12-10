@@ -9,7 +9,11 @@
         function init() {
             var input1 = document.getElementById('input1')
             input1.onblur = onInput1Blur
-            input1.onfocus = onInput1Focus
+            input1.onfocus = onInputFocus
+
+            var input2 = document.getElementById('input2')
+            input2.onblur = onInput2Blur
+            input2.onfocus = onInputFocus
         }
 
         function changeStyle(el, isValid) {
@@ -20,20 +24,21 @@
             return el.style.color !== 'red'
         }
 
-        function onInput1Focus(ev) {
-            var input1 = ev.target
+        function onInputFocus(ev) {
+            var input = ev.target
 
-            if (isPrevValid(input1)) {
-                input1.value = input1.value.replace(/,/g, '')
+            if (isPrevValid(input)) {
+                input.value = input.value.replace(/,/g, '')
             }
         }
 
+        //----------method 1: pure character judgement-----------
         function onInput1Blur(ev) {
-            var input1 = ev.target,
-                value = input1.value
+            var input = ev.target,
+                value = input.value
 
             if (value.match(/^\-?\d+\.?\d*$/)) {
-                changeStyle(input1, true)
+                changeStyle(input, true)
                 var isMinus = value.startsWith('-')
 
                 if (isMinus) {
@@ -62,11 +67,46 @@
                 changeStyle(input1, false)
             }
         }
+        //----------method 1 end-----------
+
+        //----------method 2: regexp-----------
+        function insertSeparator(inputStr) {
+            var reg = /(\-?\d+)(\d{3})/,
+                result = inputStr
+
+            while (reg.test(result)) {
+                result = result.replace(reg, '$1,$2')
+            }
+
+            return result
+        }
+
+        function onInput2Blur(ev) {
+            var input = ev.target,
+                value = input.value
+
+            if (value.match(/^\-?\d+\.?\d*$/)) {
+                changeStyle(input, true)
+                var matchArray = value.match(/(\-?\d+)(\.\d+)?/),
+                    intPart = matchArray[1],
+                    decimalPart = matchArray[2] || ''
+
+                input.value = insertSeparator(intPart) + (decimalPart)
+            } else {
+                changeStyle(input2, false)
+            }
+        }
+        //----------method 2 end-----------
     </script>
 </head>
 
 <body onload="init()">
+    <span>method 1: </span>
     <input type="text" id='input1'>
+    <hr>
+    <span>method 2: </span>
+    <input type="text" id='input2'>
+
 </body>
 
 </html>
