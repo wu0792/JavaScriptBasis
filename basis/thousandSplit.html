@@ -9,37 +9,55 @@
         function init() {
             var input1 = document.getElementById('input1')
             input1.onblur = onInput1Blur
+            input1.onfocus = onInput1Focus
         }
 
         function changeStyle(el, isValid) {
             el.style.color = isValid ? '' : 'red'
         }
 
+        function isPrevValid(el) {
+            return el.style.color !== 'red'
+        }
+
+        function onInput1Focus(ev) {
+            var input1 = ev.target
+
+            if (isPrevValid(input1)) {
+                input1.value = input1.value.replace(/,/g, '')
+            }
+        }
+
         function onInput1Blur(ev) {
             var input1 = ev.target,
                 value = input1.value
 
-
-
-            var valueNumber = parseFloat(value)
-
-            if ((valueNumber + '') === value) {
+            if (value.match(/^\-?\d+\.?\d*$/)) {
                 changeStyle(input1, true)
-                var intPart = parseInt(valueNumber),
-                    decimalPart = valueNumber - intPart
+                var isMinus = value.startsWith('-')
+
+                if (isMinus) {
+                    value = value.substr(1)
+                }
+
+                var dotIndex = value.indexOf('.'),
+                    intPart = value.substr(0, dotIndex >= 0 ? dotIndex : value.length),
+                    decimalPart = dotIndex > 0 ? value.substr(dotIndex) : ''
 
                 var result = '',
                     thousandPart = 0
 
-                while (thousandPart = parseInt(intPart / 1000)) {
-                    intPart = intPart % 1000
-                    result += `${thousandPart}${intPart ? ',' : ''}`
+                while (intPart.length > 3) {
+                    result = ',' + intPart.substr(intPart.length - 3) + result
+
+                    intPart = intPart.substr(0, intPart.length - 3)
                 }
 
-                result += intPart
-                result += decimalPart ? `.${decimalPart}` : ''
+                result = intPart + result
 
-                input1.value = result
+                result += decimalPart
+
+                input1.value = (isMinus ? '-' : '') + result
             } else {
                 changeStyle(input1, false)
             }
