@@ -14,7 +14,7 @@
             var input2 = document.getElementById('input2')
             input2.onblur = onInput2Blur
             input2.onfocus = onInputFocus
-         
+
             var input3 = document.getElementById('input3')
             input3.onblur = onInput3Blur
             input3.onfocus = onInputFocus
@@ -36,12 +36,16 @@
             }
         }
 
+        function validateDecimal(value) {
+            return value === '' || value.match(/^\-?\d+\.?\d*$/)
+        }
+
         //----------method 1: pure character judgement-----------
         function onInput1Blur(ev) {
             var input = ev.target,
                 value = input.value
 
-            if (value.match(/^\-?\d+\.?\d*$/)) {
+            if (validateDecimal(value)) {
                 changeStyle(input, true)
                 var isMinus = value.startsWith('-')
 
@@ -89,7 +93,7 @@
             var input = ev.target,
                 value = input.value
 
-            if (value.match(/^\-?\d+\.?\d*$/)) {
+            if (validateDecimal(value)) {
                 changeStyle(input, true)
                 var matchArray = value.match(/(\-?\d+)(\.\d+)?/),
                     intPart = matchArray[1],
@@ -103,15 +107,17 @@
         //----------method 2 end-----------
 
         //----------method 3: regexp-----------
-        //this method is limited to input integer without decimal
         function onInput3Blur(ev) {
             var input = ev.target,
                 value = input.value
 
-            //this method is limited to input integer without decimal
-            if (value.match(/^\-?\d+$/)) {
+            if (validateDecimal(value)) {
                 changeStyle(input, true)
-                input.value = value.replace(/(\d)(?=(?:\d{3})+\b)/g,'$1,')
+
+                input.value = value.replace(/(\d)(?=(?:\d{3})+\b)/g, function (substring, p1, offset) {
+                    return value.substr(0, offset).includes('.') ? substring : (substring + ',')
+                })
+
             } else {
                 changeStyle(input, false)
             }
