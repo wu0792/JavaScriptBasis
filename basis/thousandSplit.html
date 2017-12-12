@@ -14,6 +14,10 @@
             var input2 = document.getElementById('input2')
             input2.onblur = onInput2Blur
             input2.onfocus = onInputFocus
+         
+            var input3 = document.getElementById('input3')
+            input3.onblur = onInput3Blur
+            input3.onfocus = onInputFocus
         }
 
         function changeStyle(el, isValid) {
@@ -93,10 +97,26 @@
 
                 input.value = insertSeparator(intPart) + (decimalPart)
             } else {
-                changeStyle(input2, false)
+                changeStyle(input, false)
             }
         }
         //----------method 2 end-----------
+
+        //----------method 3: regexp-----------
+        //this method is limited to input integer without decimal
+        function onInput3Blur(ev) {
+            var input = ev.target,
+                value = input.value
+
+            //this method is limited to input integer without decimal
+            if (value.match(/^\-?\d+$/)) {
+                changeStyle(input, true)
+                input.value = value.replace(/(\d)(?=(?:\d{3})+\b)/g,'$1,')
+            } else {
+                changeStyle(input, false)
+            }
+        }
+        //----------method 3 end-----------
     </script>
 </head>
 
@@ -106,6 +126,9 @@
     <hr>
     <span>method 2: </span>
     <input type="text" id='input2'>
+    <hr>
+    <span>method 3: </span>
+    <input type="text" id='input3'>
 
 </body>
 
